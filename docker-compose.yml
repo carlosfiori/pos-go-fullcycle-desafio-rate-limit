@@ -1,0 +1,24 @@
+services:
+  redis:
+    image: redis:8.6-alpine
+    container_name: rate-limiter-redis
+    ports:
+      - "6379:6379"
+    networks:
+      - rate-limiter-network
+
+  app:
+    build: .
+    container_name: rate-limiter-app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+    env_file:
+      - .env
+    networks:
+      - rate-limiter-network
+
+networks:
+  rate-limiter-network:
+    driver: bridge
